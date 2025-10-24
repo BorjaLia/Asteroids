@@ -10,7 +10,7 @@ void bullet::Init(Bullet& bullet, drw::SpriteData& bulletSprite, prtcl::Particle
 	bullet.bulletParticleActivator.id = 0;
 	bullet.bulletParticleActivator.animated = true;
 	bullet.bulletParticleActivator.loop = true;
-	bullet.bulletParticleActivator.amount = 3;
+	bullet.bulletParticleActivator.amount = bullet::particlesAmount;
 	bullet.bulletParticleActivator.lifetime = { 0.05f,0.075f };
 	bullet.bulletParticleActivator.direction = { 0.1f,1.0f };
 	bullet.bulletParticleActivator.spread = 45.0f;
@@ -28,6 +28,10 @@ void bullet::Init(Bullet& bullet, drw::SpriteData& bulletSprite, prtcl::Particle
 	{
 		bullet.particles[i] = bulletParticles[i];
 	}
+
+	bullet.size.x /= rend::windowRatio;
+	bullet.pos.x /= rend::windowRatio;
+	bullet.direction.x /= rend::windowRatio;
 }
 
 void bullet::Init(Bullet bullets[],int bulletAmount, drw::SpriteData& bulletSprite, prtcl::ParticleData bulletParticles[], drw::AnimationData bulletFireAnim)
@@ -131,10 +135,9 @@ void bullet::Draw(Bullet bullet)
 	if (bullet.pos.y + bullet.size.y > 1.0f) {
 		drw::Sprite(drw::spriteDataList[bullet.textureID], { bullet.pos.x,bullet.pos.y - 1.0f }, bullet.size);
 	}
-	if (bullet.pos.x - bullet.size.y < 0.0f) {
+	if (bullet.pos.y - bullet.size.y < 0.0f) {
 		drw::Sprite(drw::spriteDataList[bullet.textureID], { bullet.pos.x ,bullet.pos.y + 1.0f }, bullet.size);
 	}
-
 }
 
 void bullet::Draw(Bullet bullets[], int bulletAmount)

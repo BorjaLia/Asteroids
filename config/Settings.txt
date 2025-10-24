@@ -1,5 +1,5 @@
 # Render engine
-graphics = 1 | 0 = NONE		1 = RAYLIB 	2 = SIGIL
+graphics = 2 | 0 = NONE		1 = RAYLIB 	2 = SIGIL
 
 # Resolution
 

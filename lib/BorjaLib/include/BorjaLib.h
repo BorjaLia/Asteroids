@@ -182,7 +182,14 @@ namespace mth {
 	float RadianToDegree(float angle);							// radians to degrees
 	float DegreeToRadian(float angle);							// degrees to radians
 
-	float MapToRange(float num, float min = 0, float max = 1.0f);
+	float Normalize(float& num, float min = 0, float max = 1.0f);
+	float Normalized(float num, float min = 0, float max = 1.0f);
+
+	float Lerp(float min, float max, float percentage = 0.5f);
+
+	float WrapToRange(float num, float min = 0, float max = 1.0f);
+	float MapToRange(float num, float iMin, float iMax, float oMin, float oMax);
+
 
 	void SetRandomSeed(time_t seed = 0);													// set random seed
 	int GetRandom(int min = 0, int max = 100);												// get random int
@@ -693,9 +700,12 @@ namespace prtcl {
 
 		bool animated = false;
 		
+		float startingPosInfluence = 0.0f;
+
 		drw::AnimationData animation;
 
 		vec::Vector2 pos = { 0,0 };
+		vec::Vector2 startingOffset = { 0,0 };
 
 		vec::Vector2 minSize = { 0.01f,0.01f };
 		vec::Vector2 maxSize = { 0.05f,0.05f };

@@ -36,8 +36,10 @@ namespace ship {
 
 		vec::Vector2 size = { 0.02f,0.02f };
 
-		float maxHealth = 100.0f;
-		float health = 100.0f;
+		float maxHealth = 3.0f;
+		float health = maxHealth;
+
+		float mass = 100.0f;
 
 		float damageReduction = 0.0f;
 
@@ -54,8 +56,8 @@ namespace ship {
 		bool rotatingRight = false;
 		bool rotatingLeft = false;
 
-		float acceleration = 0.00015f;
-		float breakingPower = 0.0001f;
+		float acceleration = 0.15f;
+		float breakingPower = 0.1f;
 		float speed = 0.01f;
 
 		float minSpeed = 0.001f;
@@ -68,10 +70,12 @@ namespace ship {
 
 		bool shotQueued = false;
 
-		float maxShotAngle = 90;
+		float maxShotAngle = 90.0f;
 
 		int maxAmmoSize = 25;
 		int currentAmmoSize = maxAmmoSize;
+
+		float bulletSpread = 20.0f;
 
 		bool reloading = false;
 		float reloadTime = 1.0f;

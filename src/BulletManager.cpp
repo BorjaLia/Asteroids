@@ -13,21 +13,24 @@ int bulletManager::AvailableBullet(bullet::Bullet bullets[], int bulletAmount)
 	return 0;
 }
 
-void bulletManager::Shoot(ship::Ship& ship, bullet::Bullet bullets[],int bulletAmount)
+void bulletManager::Shoot(ship::Ship& ship, bullet::Bullet bullets[], int bulletAmount)
 {
-	int availableBulletID = AvailableBullet(bullets,bulletAmount);
+	int availableBulletID = AvailableBullet(bullets, bulletAmount);
 	availableBulletID = currentShot;
 
 	bullet::Activate(bullets[availableBulletID]);
 
 	bullets[availableBulletID].pos = ship.pos;
-	
-	std::cout << mth::RadianToDegree(ship.lookingAt.angle(ship.direction)) << "\n";
 
-	float currentAngle = mth::RadianToDegree(ship.lookingAt.angle(ship.direction));
+	vec::Vector2 shotDirection = ship.lookingAt;
+
+	//
+	// << mth::RadianToDegree(ship.lookingAt.angle(ship.direction)) << "\n";
+
+	//float currentAngle = mth::RadianToDegree(ship.lookingAt.angle(ship.direction));
+	float currentAngle = mth::RadianToDegree(ship.lookingAt.angle(ship.lookingAt));
 
 	if (currentAngle > ship.maxShotAngle && currentAngle < 360.0f - ship.maxShotAngle) {
-		std::cout << "Yes" << "\n";
 		if (currentAngle > 180.0f) {
 			bullets[availableBulletID].direction = ship.direction.rotatedDegree(-ship.maxShotAngle);
 		}
@@ -36,7 +39,8 @@ void bulletManager::Shoot(ship::Ship& ship, bullet::Bullet bullets[],int bulletA
 		}
 	}
 	else {
-		bullets[availableBulletID].direction = ship.lookingAt;
+		shotDirection.randomizeAngle(-ship.bulletSpread / 2.0f, ship.bulletSpread / 2.0f);
+		bullets[availableBulletID].direction = shotDirection;
 	}
 
 	currentShot++;

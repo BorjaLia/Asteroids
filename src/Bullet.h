@@ -10,8 +10,8 @@ namespace bullet {
 
 		bool active = false;
 
-		float maxLifetime = 5.0f;
-		//float maxLifetime = 0.25f;
+		//float maxLifetime = 4.0f;
+		float maxLifetime = 0.5f;
 		float currentLifetime = 0.0f;
 
 		float damage = 1.0f;

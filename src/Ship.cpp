@@ -8,6 +8,10 @@ void ship::Init(ship::Ship& ship, drw::SpriteData& shipSprite, prtcl::ParticleDa
 
 	ship::Reset(ship, fireParticles);
 
+	ship.size.x /= rend::windowRatio;
+	ship.direction.x /= rend::windowRatio;
+	ship.lookingAt.x /= rend::windowRatio;
+
 	ship.active = true;
 }
 
@@ -111,16 +115,16 @@ void ship::Update(ship::Ship& ship, prtcl::ParticleData fireParticles[])
 	ship.lookingAt.normalize();
 
 	if (ship.braking) {
-		ship.rotationSpeed = 5.0f;
-		ship.speed -= ship.breakingPower;
+		ship.rotationSpeed = 7.0f;
+		ship.speed -= ship.breakingPower * rend::deltaTime;
 		mth::Clamp(ship.speed, ship.minSpeed, ship.maxSpeed);
 	}
 	else {
-		ship.rotationSpeed = 3.5f;
+		ship.rotationSpeed = 5.0f;
 	}
 
 	if (ship.accelerating) {
-		ship.speed += ship.acceleration;
+		ship.speed += ship.acceleration * rend::deltaTime;
 		mth::Clamp(ship.speed, ship.minSpeed, ship.maxSpeed);
 
 		ship.direction += ship.lookingAt * ship.rotationSpeed * rend::deltaTime;
@@ -128,6 +132,7 @@ void ship::Update(ship::Ship& ship, prtcl::ParticleData fireParticles[])
 
 	ship.direction.normalize();
 	ship.direction = ship.direction * ship.speed * rend::deltaTime;
+
 	ship.pos += ship.direction;
 
 	if (ship.pos.x > 1.0f) {
@@ -156,8 +161,9 @@ void ship::Update(ship::Ship& ship, prtcl::ParticleData fireParticles[])
 
 
 	ship.direction.normalize();
-	ship.fireParticleActivator.pos = ship.pos - ship.direction * (ship.size.y / 2);
-	ship.fireParticleActivator.direction = ship.direction.rotatedDegree(180);
+	ship.fireParticleActivator.pos = ship.pos - ship.lookingAt * (ship.size.y / 2);
+	ship.fireParticleActivator.direction = ship.lookingAt.rotatedDegree(180);
+
 
 	if (ship.accelerating) {
 		ship.fireParticleActivator.speed = ship.fireParticleAcceleratingSpeed;
@@ -175,6 +181,11 @@ void ship::Update(ship::Ship& ship, prtcl::ParticleData fireParticles[])
 		ship.fireParticleActivator.lifetime = ship.fireParticleNormalLifetime;
 	}
 
+
+	for (int i = 0; i < fireParticles[0].amount; i++)
+	{
+		fireParticles[i].pos += ship.direction * ship.speed * rend::deltaTime;
+	}
 	prtcl::Update(ship.fireParticleActivator, fireParticles);
 }
 
@@ -183,7 +194,7 @@ void ship::Draw(ship::Ship ship, prtcl::ParticleData fireParticles[])
 	drw::Sprite(drw::spriteDataList[ship.textureID], ship.pos, ship.size);
 	prtcl::Draw(fireParticles);
 
-	if (ship.pos.x + ship.size.x/2.0f > 1.0f) {
+	if (ship.pos.x + ship.size.x / 2.0f > 1.0f) {
 		drw::Sprite(drw::spriteDataList[ship.textureID], { ship.pos.x - 1.0f,ship.pos.y }, ship.size);
 	}
 	if (ship.pos.x - ship.size.x / 2.0f < 0.0f) {
@@ -209,7 +220,7 @@ void ship::DrawHUD(Ship ship)
 		drw::Text(ammo.c_str(), text, { 0.075f,0.05f }, 75, {}, GREEN_B);
 	}
 	else {
-		drw::Text("Reloading...", text, {0.075f,0.05f}, 50, {}, GREEN_B);
+		drw::Text("Reloading...", text, { 0.075f,0.05f }, 50, {}, GREEN_B);
 
 	}
 

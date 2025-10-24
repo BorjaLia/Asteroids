@@ -1,5 +1,6 @@
 #include "BorjaLib.h"
-#include "BulletManager.h"
+#include "bulletManager.h"
+#include "AsteroidManager.h"
 
 int main() {
 
@@ -18,6 +19,9 @@ int main() {
 	bulletSprite.id = shipSprite.id;
 	bulletSprite.size = { 0.01f,0.01f };
 
+	drw::SpriteData asteroidSprite;
+	asteroidSprite.id = shipSprite.id;
+	asteroidSprite.size = { 0.2f,0.2f };
 
 	//Anim frames
 
@@ -39,6 +43,7 @@ int main() {
 
 	drw::SpriteData fireFrames[] = { fireFrame1,fireFrame2,fireFrame3, fireFrame4 };
 	drw::SpriteData bulletFireFrames[] = { fireFrame1,fireFrame2,fireFrame3, fireFrame4 };
+	drw::SpriteData asteroidExplosionFrames[] = { fireFrame1,fireFrame2,fireFrame3, fireFrame4 };
 
 	//Animations
 
@@ -46,6 +51,11 @@ int main() {
 	fireAnim.duration = 0.125f;
 
 	drw::InitAnimData(fireAnim, fireFrames, 4);
+
+	drw::AnimationData asteroidExplosionAnim;
+	asteroidExplosionAnim.duration = 0.3f;
+
+	drw::InitAnimData(asteroidExplosionAnim, asteroidExplosionFrames, 4);
 
 	drw::AnimationData bulletFireAnim;
 	bulletFireAnim.duration = 0.1f;
@@ -60,9 +70,20 @@ int main() {
 	
 	prtcl::ParticleData fireBulletParticle;
 
+	prtcl::ParticleData asteroidParticles[] = { fireBulletParticle ,fireBulletParticle ,fireBulletParticle };
+	
 	prtcl::ParticleData bulletParticles[] = { fireBulletParticle ,fireBulletParticle ,fireBulletParticle };
 
+	//Asteroids
 
+	asteroidManager::AsteroidSpawner asteroidSpawner;
+
+	asteroidManager::Init(asteroidSpawner);
+
+	asteroid::Asteroid asteroids[asteroidManager::maxAsteroidAmount] = {};
+
+	asteroid::Init(asteroids, asteroidManager::maxAsteroidAmount, asteroidSprite, asteroidParticles, asteroidExplosionAnim);
+	
 	//Bullets
 
 	bullet::Bullet bullets[bulletManager::maxBulletAmount] = {};
@@ -82,17 +103,19 @@ int main() {
 		//update
 		bLib::UpdateStart();
 
+		asteroidManager::Update(asteroidSpawner,asteroids,asteroidManager::maxAsteroidAmount);
+
 		ship::Input(ship);
 
 		ship::Update(ship,fireParticles);
-
-
 
 		if (ship::Shoot(ship)) {
 			bulletManager::Shoot(ship, bullets, bulletManager::maxBulletAmount);
 		}
 
 		bullet::Update(bullets,bulletManager::maxBulletAmount);
+
+		asteroid::Update(asteroids,asteroidManager::maxAsteroidAmount);
 
 		bLib::UpdateEnd();
 
@@ -102,7 +125,10 @@ int main() {
 		drw::Begin();
 		drw::Clear(BLACK_B);
 
+		asteroid::Draw(asteroids,asteroidManager::maxAsteroidAmount);
+
 		bullet::Draw(bullets,bulletManager::maxBulletAmount);
+
 		ship::Draw(ship,fireParticles);
 
 		ship::DrawHUD(ship);

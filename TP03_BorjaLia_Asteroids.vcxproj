@@ -19,13 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Asteroid.h" />
+    <ClInclude Include="src\Asteroid.h" />
+    <ClInclude Include="src\AsteroidManager.h" />
     <ClInclude Include="src\Bullet.h" />
     <ClInclude Include="src\BulletManager.h" />
     <ClInclude Include="src\Ship.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Asteroid.cpp" />
+    <ClCompile Include="src\Asteroid.cpp" />
+    <ClCompile Include="src\AsteroidManager.cpp" />
     <ClCompile Include="src\Bullet.cpp" />
     <ClCompile Include="src\BulletManager.cpp" />
     <ClCompile Include="src\Main.cpp" />

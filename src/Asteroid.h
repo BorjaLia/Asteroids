@@ -7,15 +7,20 @@ namespace asteroid {
 	enum class Type {
 
 		SMALL = 1,
-		MEDIUM = 2,
-		BIG = 4
+		MEDIUM,
+		BIG,
+		SIZE
 	};
 
-	const int particlesAmount = 10;
+	const int particlesAmount = 3;
 
 	struct Asteroid {
 
 		bool active = false;
+
+		bool inside = false;
+
+		float lifetime = 0.0f;
 
 		Type type = Type::SMALL;
 
@@ -33,7 +38,7 @@ namespace asteroid {
 		vec::Vector2 pos = { -1.0f,-1.0f };
 		vec::Vector2 direction = { 0.0f,0.01f };
 
-		vec::Vector2 size = { 0.005f,0.005f };
+		vec::Vector2 size = { 0.05f,0.05f };
 
 		int textureID = 0;
 
@@ -43,17 +48,17 @@ namespace asteroid {
 	};
 
 
-	//void Init(Asteroid& asteroid, drw::SpriteData& asteroidSprite, prtcl::ParticleData asteroidParticles[], drw::AnimationData asteroidExplosionAnim);
-	//void Init(Asteroid asteroids[], int asteroidAmount, drw::SpriteData& asteroidSprite, prtcl::ParticleData asteroidParticles[], drw::AnimationData asteroidExplosionAnim);
+	void Init(Asteroid& asteroid, drw::SpriteData& asteroidSprite, prtcl::ParticleData asteroidParticles[], drw::AnimationData asteroidExplosionAnim);
+	void Init(Asteroid asteroids[], int asteroidAmount, drw::SpriteData& asteroidSprite, prtcl::ParticleData asteroidParticles[], drw::AnimationData asteroidExplosionAnim);
 
-	//void Reset(Asteroid& asteroid);
-	//void Reset(Asteroid asteroids[], int asteroidAmount);
+	void Reset(Asteroid& asteroid);
+	void Reset(Asteroid asteroids[], int asteroidAmount);
 
-	//void Activate(Asteroid& asteroid);
+	void Activate(Asteroid& asteroid);
 
-	//void Update(Asteroid& asteroid);
-	//void Update(Asteroid asteroids[], int asteroidAmount);
+	void Update(Asteroid& asteroid);
+	void Update(Asteroid asteroids[], int asteroidAmount);
 
-	//void Draw(Asteroid asteroid);
-	//void Draw(Asteroid asteroids[], int asteroidAmount);
+	void Draw(Asteroid asteroid);
+	void Draw(Asteroid asteroids[], int asteroidAmount);
 }
