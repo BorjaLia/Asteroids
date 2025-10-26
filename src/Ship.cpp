@@ -90,63 +90,7 @@ void ship::Update(ship::Ship& ship, prtcl::ParticleData fireParticles[])
 
 	ship.timeSinceLastShot += rend::deltaTime;
 
-	switch (ship.movementType)
-	{
-	case ship::MovementType::MOUSE: {
-		ship.lookingAt = rend::mousePos - ship.pos;
-		break;
-	}
-	case ship::MovementType::KEYBOARD: {
-		ship.lookingAt = ship.direction.normalized() * ship.lookingAtDistance;
-		if (ship.rotatingLeft) {
-			ship.direction.rotate(ship.rotationSpeed * rend::deltaTime);
-		}
-		if (ship.rotatingRight) {
-			ship.direction.rotate(-ship.rotationSpeed * rend::deltaTime);
-		}
-		break;
-	}
-	default: {
-
-		break;
-	}
-	}
-
-	ship.lookingAt.normalize();
-
-	if (ship.braking) {
-		ship.rotationSpeed = 7.0f;
-		ship.speed -= ship.breakingPower * rend::deltaTime;
-		mth::Clamp(ship.speed, ship.minSpeed, ship.maxSpeed);
-	}
-	else {
-		ship.rotationSpeed = 5.0f;
-	}
-
-	if (ship.accelerating) {
-		ship.speed += ship.acceleration * rend::deltaTime;
-		mth::Clamp(ship.speed, ship.minSpeed, ship.maxSpeed);
-
-		ship.direction += ship.lookingAt * ship.rotationSpeed * rend::deltaTime;
-	}
-
-	ship.direction.normalize();
-	ship.direction = ship.direction * ship.speed * rend::deltaTime;
-
-	ship.pos += ship.direction;
-
-	if (ship.pos.x > 1.0f) {
-		ship.pos.x = 0.0f;
-	}
-	if (ship.pos.x < 0.0f) {
-		ship.pos.x = 1.0f;
-	}
-	if (ship.pos.y > 1.0f) {
-		ship.pos.y = 0.0f;
-	}
-	if (ship.pos.y < 0.0f) {
-		ship.pos.y = 1.0f;
-	}
+	Move(ship);
 
 	if (ship.reloading) {
 
@@ -159,34 +103,7 @@ void ship::Update(ship::Ship& ship, prtcl::ParticleData fireParticles[])
 		}
 	}
 
-
-	ship.direction.normalize();
-	ship.fireParticleActivator.pos = ship.pos - ship.lookingAt * (ship.size.y / 2);
-	ship.fireParticleActivator.direction = ship.lookingAt.rotatedDegree(180);
-
-
-	if (ship.accelerating) {
-		ship.fireParticleActivator.speed = ship.fireParticleAcceleratingSpeed;
-	}
-	else {
-		ship.fireParticleActivator.speed = ship.fireParticleNormalSpeed;
-	}
-
-	if (ship.braking) {
-		ship.fireParticleActivator.spread = ship.fireParticleBreakingSpread;
-		ship.fireParticleActivator.lifetime = ship.fireParticleBreakingLifetime;
-	}
-	else {
-		ship.fireParticleActivator.spread = ship.fireParticleNormalSpread;
-		ship.fireParticleActivator.lifetime = ship.fireParticleNormalLifetime;
-	}
-
-
-	for (int i = 0; i < fireParticles[0].amount; i++)
-	{
-		fireParticles[i].pos += ship.direction * ship.speed * rend::deltaTime;
-	}
-	prtcl::Update(ship.fireParticleActivator, fireParticles);
+	MoveParticles(ship,fireParticles);
 }
 
 void ship::Draw(ship::Ship ship, prtcl::ParticleData fireParticles[])
@@ -207,6 +124,12 @@ void ship::Draw(ship::Ship ship, prtcl::ParticleData fireParticles[])
 	if (ship.pos.y - ship.size.y / 2.0f < 0.0f) {
 		drw::Sprite(drw::spriteDataList[ship.textureID], { ship.pos.x ,ship.pos.y + 1.0f }, ship.size);
 	}
+
+	if (rend::frameInfo) {
+		drw::Line(ship.pos,ship.pos+ship.direction,GREEN_B);
+		drw::Line(ship.pos,ship.pos+ship.lookingAt,RED_B);
+	}
+
 }
 
 void ship::DrawHUD(Ship ship)
@@ -252,4 +175,107 @@ bool ship::Shoot(Ship& ship)
 		}
 	}
 	return false;
+}
+
+void ship::Move(Ship& ship)
+{
+	switch (ship.movementType)
+	{
+	case ship::MovementType::MOUSE: {
+		ship.lookingAt = rend::mousePos - ship.pos;
+		break;
+	}
+	case ship::MovementType::KEYBOARD: {
+		ship.lookingAt = ship.direction.normalized() * ship.lookingAtDistance;
+		if (ship.rotatingLeft) {
+			ship.lookingAt.rotate(ship.rotationSpeed * rend::deltaTime);
+		}
+		if (ship.rotatingRight) {
+			ship.lookingAt.rotate(-ship.rotationSpeed * rend::deltaTime);
+		}
+		break;
+	}
+	default: {
+
+		break;
+	}
+	}
+
+	ship.lookingAt.normalize();
+
+	//if (ship.braking) {
+	//	ship.rotationSpeed = 7.0f;
+	//	ship.speed -= ship.breakingPower * rend::deltaTime;
+	//	ship.speed.clamp(ship.minSpeed,ship.maxSpeed);
+	//	//mth::Clamp(ship.speed,ship.minSpeed,ship.maxSpeed);
+	//}
+	//else {
+	//	ship.rotationSpeed = 5.0f;
+	//}
+
+	//if (ship.accelerating) {
+	//	ship.speed += ship.direction * ship.acceleration * rend::deltaTime;
+	//	ship.speed.clamp(ship.minSpeed,ship.maxSpeed);
+	//	//mth::Clamp(ship.speed,ship.minSpeed,ship.maxSpeed);
+	//	//ship.direction.x += ship.lookingAt.x * ship.rotationSpeed * 1.0f + mth::MapToRange(sinf(ship.direction.angle(ship.lookingAt)), -1.0f, 1.0f, 0.0f, 1.0f) * rend::deltaTime;
+	//	//ship.direction.y += ship.lookingAt.y * ship.rotationSpeed * 1.0f + mth::MapToRange(cosf(ship.direction.angle(ship.lookingAt)), -1.0f, 1.0f, 0.0f, 1.0f) * rend::deltaTime;
+	//	ship.direction += ship.lookingAt * ship.rotationSpeed * rend::deltaTime;
+	//}
+
+	//std::cout << 2.0f + mth::MapToRange(cosf(ship.direction.angle(ship.lookingAt)), -1.0f, 1.0f,0.0f,1.0f) << "                                   " << '\r';
+
+	ship.direction = ship.lookingAt;
+	ship.direction.normalize();
+
+
+	if (ship.accelerating) {
+		ship.speed += ship.direction * ship.acceleration * rend::deltaTime;
+		ship.speed.clamp(ship.minSpeed, ship.maxSpeed);
+	}
+
+	ship.pos += ship.speed * rend::deltaTime;
+
+	if (ship.pos.x > 1.0f) {
+		ship.pos.x = 0.0f;
+	}
+	if (ship.pos.x < 0.0f) {
+		ship.pos.x = 1.0f;
+	}
+	if (ship.pos.y > 1.0f) {
+		ship.pos.y = 0.0f;
+	}
+	if (ship.pos.y < 0.0f) {
+		ship.pos.y = 1.0f;
+	}
+}
+
+void ship::MoveParticles(Ship& ship, prtcl::ParticleData fireParticles[])
+{
+
+	ship.fireParticleActivator.pos = ship.pos - ship.lookingAt * (ship.size.y / 2);
+	ship.fireParticleActivator.direction = ship.lookingAt.rotatedDegree(180);
+
+
+	if (ship.accelerating) {
+		ship.fireParticleActivator.speed = ship.fireParticleAcceleratingSpeed;
+	}
+	else {
+		ship.fireParticleActivator.speed = ship.fireParticleNormalSpeed;
+	}
+
+	if (ship.braking) {
+		ship.fireParticleActivator.spread = ship.fireParticleBreakingSpread;
+		ship.fireParticleActivator.lifetime = ship.fireParticleBreakingLifetime;
+	}
+	else {
+		ship.fireParticleActivator.spread = ship.fireParticleNormalSpread;
+		ship.fireParticleActivator.lifetime = ship.fireParticleNormalLifetime;
+	}
+
+
+	for (int i = 0; i < fireParticles[0].amount; i++)
+	{
+		fireParticles[i].pos += ship.direction * ship.speed * rend::deltaTime;
+	}
+	prtcl::Update(ship.fireParticleActivator, fireParticles);
 }

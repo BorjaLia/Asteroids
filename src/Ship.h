@@ -43,6 +43,9 @@ namespace ship {
 
 		float damageReduction = 0.0f;
 
+		int score = 0;
+		int money = 0;
+
 		//Movement
 
 		vec::Vector2 pos = { 0.5f,0.5f };
@@ -56,9 +59,9 @@ namespace ship {
 		bool rotatingRight = false;
 		bool rotatingLeft = false;
 
-		float acceleration = 0.15f;
-		float breakingPower = 0.1f;
-		float speed = 0.01f;
+		float acceleration = 1.15f;
+		float breakingPower = 1.1f;
+		vec::Vector2 speed = { 0.0f, 0.01f };
 
 		float minSpeed = 0.001f;
 		float maxSpeed = 0.5f;
@@ -117,4 +120,8 @@ namespace ship {
 	bool Reload(Ship& ship);
 
 	bool Shoot(Ship& ship);
+
+	void Move(Ship& ship);
+
+	void MoveParticles(Ship& ship, prtcl::ParticleData fireParticles[]);
 }

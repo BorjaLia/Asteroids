@@ -178,6 +178,10 @@ namespace mth {
 	void Clamp(float& num, float min = 0, float max = 1.0f);		// clamp number between min and max
 	float Clamped(float num, float min = 0, float max = 1.0f);		// clamp number between min and max
 	float Abs(float& num);										// makes the number positive
+	float AsAbs(float num);										// makes the number positive
+
+	float Min(float num1, float num2);
+	float Max(float num1, float num2);
 
 	float RadianToDegree(float angle);							// radians to degrees
 	float DegreeToRadian(float angle);							// degrees to radians
@@ -476,6 +480,17 @@ namespace rend {
 	extern bool pixelMode;
 }
 
+namespace coll {
+
+	bool PointOnRec(vec::Vector2 point, vec::Vector2 pos, vec::Vector2 size);
+	bool PointOnCircle(vec::Vector2 point, vec::Vector2 pos, float radius);
+	bool RecOnRec(vec::Vector2 pos1, vec::Vector2 size1, vec::Vector2 pos2, vec::Vector2 size2, vec::Vector2& point);
+	//bool RecOnElipse(vec::Vector2 pos1, vec::Vector2 size1, vec::Vector2 pos2, vec::Vector2 size2, vec::Vector2& point);
+	//bool RecOnElipse(vec::Vector2 pos1, vec::Vector2 size1, vec::Vector2 pos2, vec::Vector2 size2, vec::Vector2& point);
+	//bool RecOnCircle(vec::Vector2 pos1, vec::Vector2 size1, vec::Vector2 pos2, vec::Vector2 size2, vec::Vector2& point);
+	//bool RecOnCircle(vec::Vector2 pos1, vec::Vector2 size1, vec::Vector2 pos2, float radius, vec::Vector2& point);
+}
+
 namespace drw {
 
 	struct SpriteData {
@@ -557,7 +572,7 @@ namespace drw {
 	void Triangle(vec::Vector2 p1, vec::Vector2 p2, vec::Vector2 p3, bColor color = WHITE_B);
 	void Rectangle(vec::Vector2 pos, vec::Vector2 size, bColor color = WHITE_B, vec::Vector2 offset = { 0,0 });
 	void Circle(vec::Vector2 pos, vec::Vector2 size, bColor color = WHITE_B);
-
+	void Line(vec::Vector2 start, vec::Vector2 end, bColor color = WHITE_B);
 }
 
 namespace snd {

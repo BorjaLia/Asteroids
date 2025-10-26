@@ -28,6 +28,9 @@ namespace asteroid {
 
 		float damage = 1.0f;
 
+		int score = 0;
+		int money = 0;
+
 		float maxSpeed = 1.5f;
 		float minSpeed = 0.05f;
 
