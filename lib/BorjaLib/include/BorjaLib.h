@@ -442,6 +442,12 @@ namespace rend {
 		SIGIL
 	};
 
+	enum class InfoMode {
+		NONE,
+		BASIC,
+		ADVANCED
+	};
+
 	bool ChangeRenderer();
 
 	void OpenWindow(vec::Vector2 size, const char* title, bool fullscreen = false);
@@ -458,7 +464,11 @@ namespace rend {
 	extern rend::GraphicsLib nextGraphics;
 
 	extern ctrl::Key frameInfoKey;
-	extern bool frameInfo;
+	extern InfoMode frameInfo;
+	extern ctrl::Key devInfoKey;
+	extern InfoMode devInfo;
+	extern ctrl::Key devModeKey;
+	extern InfoMode devMode;
 
 	extern int frameCounter;
 	extern int framerate;
@@ -569,10 +579,13 @@ namespace drw {
 	bool Animation(AnimationData& animation, vec::Vector2 pos = { 0,0 }, vec::Vector2 size = { 0,0 }, vec::Vector2 offset = { 0,0 }, bColor color = WHITE_B);
 	bool Sprite(SpriteData sprite, vec::Vector2 pos = { 0,0 }, vec::Vector2 size = { 0,0 }, vec::Vector2 offset = { 0,0 }, bColor color = WHITE_B);
 	void Text(const char* text, TextData& textData, vec::Vector2 pos = { 0,0 }, int fontSize = 10, vec::Vector2 offset = { 0,0 }, bColor color = WHITE_B);
+	void Text(const char* text, vec::Vector2 pos = { 0,0 }, int fontSize = 10, vec::Vector2 offset = { 0,0 }, bColor color = WHITE_B);
+	void Text(TextData& textData, vec::Vector2 pos = { 0,0 }, int fontSize = 10, vec::Vector2 offset = { 0,0 }, bColor color = WHITE_B);
 	void Triangle(vec::Vector2 p1, vec::Vector2 p2, vec::Vector2 p3, bColor color = WHITE_B);
 	void Rectangle(vec::Vector2 pos, vec::Vector2 size, bColor color = WHITE_B, vec::Vector2 offset = { 0,0 });
 	void Circle(vec::Vector2 pos, vec::Vector2 size, bColor color = WHITE_B);
 	void Line(vec::Vector2 start, vec::Vector2 end, bColor color = WHITE_B);
+	void Line(vec::Vector2 start, vec::Vector2 end,float size = 0.0f, bColor color = WHITE_B);
 }
 
 namespace snd {

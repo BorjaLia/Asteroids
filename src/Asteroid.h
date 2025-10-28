@@ -18,6 +18,8 @@ namespace asteroid {
 
 		bool active = false;
 
+		bool breaking = false;
+
 		bool inside = false;
 
 		float lifetime = 0.0f;
@@ -58,6 +60,8 @@ namespace asteroid {
 	void Reset(Asteroid asteroids[], int asteroidAmount);
 
 	void Activate(Asteroid& asteroid);
+
+	void Break(Asteroid& asteroid);
 
 	void Update(Asteroid& asteroid);
 	void Update(Asteroid asteroids[], int asteroidAmount);

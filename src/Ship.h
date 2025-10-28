@@ -41,6 +41,8 @@ namespace ship {
 
 		float mass = 100.0f;
 
+		float crashDamage = 1.0f;
+
 		float damageReduction = 0.0f;
 
 		int score = 0;
@@ -78,13 +80,15 @@ namespace ship {
 		int maxAmmoSize = 25;
 		int currentAmmoSize = maxAmmoSize;
 
-		float bulletSpread = 20.0f;
+		//float bulletSpread = 20.0f;
+		float bulletSpread = 0.0f;
 
 		bool reloading = false;
 		float reloadTime = 1.0f;
 		float currentReloadTime = 0.0f;
 
-		float fireRate = 0.175f;
+		//float fireRate = 0.175f;
+		float fireRate = 0.1f;
 		float timeSinceLastShot = fireRate;
 
 		//Textures

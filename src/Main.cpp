@@ -135,7 +135,7 @@ int main() {
 		//update
 		bLib::UpdateStart();
 
-		asteroidManager::Update(asteroidSpawner,asteroids,asteroidManager::maxAsteroidAmount);
+		asteroidManager::Update(asteroidSpawner,ship,bullets,bulletManager::maxBulletAmount, asteroids,asteroidManager::maxAsteroidAmount);
 
 		ship::Input(ship);
 

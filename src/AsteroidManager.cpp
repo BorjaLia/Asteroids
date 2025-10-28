@@ -21,9 +21,25 @@ int asteroidManager::AvailableAsteroid(asteroid::Asteroid asteroids[], int aster
 	return 0;
 }
 
-void asteroidManager::Update(AsteroidSpawner& spawner, asteroid::Asteroid asteroids[], int asteroidAmount)
+void asteroidManager::Update(AsteroidSpawner& spawner, ship::Ship& ship, bullet::Bullet bullets[], int bulletAmount, asteroid::Asteroid asteroids[], int asteroidAmount)
 {
 	Spawner(spawner, asteroids, asteroidAmount);
+	int id = -1;
+	int asteroidID = Collision(ship, bullets, bulletAmount, asteroids, asteroidAmount, id);
+	if (asteroidID > -1) {
+		if (id == -1) {
+			ship.health -= 1.0f;
+			asteroids[asteroidID].Health -= ship.crashDamage;
+			std::cout << '\n';
+			std::cout << "Crashed asteroid n " << asteroidID << ". Health" << asteroids[asteroidID].Health << '\n';
+		}
+		else {
+			bullet::Reset(bullets[id]);
+			asteroids[asteroidID].Health -= 1.0f;
+			std::cout << '\n';
+			std::cout << "Shot asteroid n " << asteroidID << ". Health" << asteroids[asteroidID].Health << '\n';
+		}
+	}
 	Destroyer(spawner, asteroids, asteroidAmount);
 }
 
@@ -47,7 +63,7 @@ void asteroidManager::Spawner(AsteroidSpawner& spawner, asteroid::Asteroid aster
 	int availableAsteroidID = AvailableAsteroid(asteroids, asteroidAmount);
 	availableAsteroidID = currentAsteroid;
 
-	if (rend::frameInfo) {
+	if (rend::devInfo != rend::InfoMode::NONE) {
 		std::cout << '\n';
 		std::cout << "spawned asteroid n " << availableAsteroidID << '\n';
 	}
@@ -120,7 +136,7 @@ void asteroidManager::Spawn(AsteroidSpawner& spawner, asteroid::Asteroid& astero
 	spawnPos.toCartesianDegree();
 
 	asteroid.pos = spawnPos + spawner.center;
-	if (rend::frameInfo) {
+	if (rend::devInfo != rend::InfoMode::NONE) {
 		std::cout << "Pos : " << spawnPos << '\n';
 	}
 
@@ -144,7 +160,7 @@ void asteroidManager::Spawn(AsteroidSpawner& spawner, asteroid::Asteroid& astero
 
 	asteroid.active = true;
 
-	if (rend::frameInfo) {
+	if (rend::devInfo != rend::InfoMode::NONE) {
 		std::cout << "At " << asteroid.pos << '\n';
 		std::cout << "Going to " << asteroid.direction.asCircularDegree() << '\n';
 		std::cout << "speed " << asteroid.speed << '\n';
@@ -164,9 +180,9 @@ void asteroidManager::Destroyer(AsteroidSpawner& spawner, asteroid::Asteroid ast
 			destroy = (asteroids[i].lifetime >= maxOutsideLifetime);
 		}
 		if (destroy) {
-			asteroid::Reset(asteroids[i]);
+			asteroid::Break(asteroids[i]);
 			spawner.activeAsteroidSlots--;
-			if (rend::frameInfo) {
+			if (rend::devInfo != rend::InfoMode::NONE) {
 				std::cout << '\n';
 				std::cout << "Destroyed asteroid n " << i << '\n';
 			}
@@ -174,16 +190,27 @@ void asteroidManager::Destroyer(AsteroidSpawner& spawner, asteroid::Asteroid ast
 	}
 }
 
-bool asteroidManager::Collision(ship::Ship& ship, bullet::Bullet bullets[], int bulletAmount, asteroid::Asteroid asteroids[], int asteroidAmount)
+int asteroidManager::Collision(ship::Ship& ship, bullet::Bullet bullets[], int bulletAmount, asteroid::Asteroid asteroids[], int asteroidAmount, int& id)
 {
 	for (int a = 0; a < asteroidAmount; a++)
 	{
-		for (int b = 0; b < bulletAmount; b++)
-		{
-			if (asteroids[a].pos == bullets[b].pos || asteroids[a].pos == ship.pos) {
-				return true;
+		if (asteroids[a].active) {
+
+			for (int b = 0; b < bulletAmount; b++)
+			{
+				if (bullets[b].active) {
+
+					if (coll::PointOnCircle(bullets[b].pos, asteroids[a].pos, asteroids[a].size.x)) {
+						id = b;
+						return a;
+					}
+					if (coll::PointOnCircle(ship.pos, asteroids[a].pos, asteroids[a].size.x)) {
+						id = -1;
+						return a;
+					}
+				}
 			}
 		}
 	}
-	return false;
+	return -1;
 }

@@ -103,7 +103,7 @@ void ship::Update(ship::Ship& ship, prtcl::ParticleData fireParticles[])
 		}
 	}
 
-	MoveParticles(ship,fireParticles);
+	MoveParticles(ship, fireParticles);
 }
 
 void ship::Draw(ship::Ship ship, prtcl::ParticleData fireParticles[])
@@ -125,9 +125,9 @@ void ship::Draw(ship::Ship ship, prtcl::ParticleData fireParticles[])
 		drw::Sprite(drw::spriteDataList[ship.textureID], { ship.pos.x ,ship.pos.y + 1.0f }, ship.size);
 	}
 
-	if (rend::frameInfo) {
-		drw::Line(ship.pos,ship.pos+ship.direction,GREEN_B);
-		drw::Line(ship.pos,ship.pos+ship.lookingAt,RED_B);
+	if (rend::devInfo != rend::InfoMode::NONE) {
+		drw::Line(ship.pos, ship.lookingAt,ship.lookingAtDistance, RED_B);
+		drw::Line(ship.pos, ship.direction,0.01f, GREEN_B);
 	}
 
 }
@@ -140,13 +140,22 @@ void ship::DrawHUD(Ship ship)
 		std::string ammo = std::to_string(ship.currentAmmoSize);
 		ammo.append("/");
 		ammo.append(std::to_string(ship.maxAmmoSize));
-		drw::Text(ammo.c_str(), text, { 0.075f,0.05f }, 75, {}, GREEN_B);
+		drw::Text(ammo.c_str(), text, { 0.9f,0.05f }, 75, {}, GREEN_B);
 	}
 	else {
-		drw::Text("Reloading...", text, { 0.075f,0.05f }, 50, {}, GREEN_B);
-
+		drw::Text("Reloading...", text, { 0.9f,0.05f }, 50, {}, GREEN_B);
 	}
-
+	if (ship.health >= 0.0f) {
+		drw::Sprite(drw::spriteDataList[ship.textureID], { 0.05f,0.05f }, ship.size * 2.0f);
+		if (ship.health > 1.0f) {
+			drw::Sprite(drw::spriteDataList[ship.textureID], { 0.1f,0.05f }, ship.size * 2.0f);
+			if (ship.health > 2.0f) {
+				drw::Sprite(drw::spriteDataList[ship.textureID], { 0.15f,0.05f }, ship.size * 2.0f);
+			}
+		}
+	}
+	std::string score = std::to_string(ship.score);
+	drw::Text(score.c_str(), text, { 0.5f,0.05f }, 50, {}, GREEN_B);
 }
 
 bool ship::Reload(Ship& ship)
@@ -200,6 +209,8 @@ void ship::Move(Ship& ship)
 		break;
 	}
 	}
+
+	ship.lookingAtDistance = ship.lookingAt.magnitude();
 
 	ship.lookingAt.normalize();
 

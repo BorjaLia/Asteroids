@@ -138,6 +138,9 @@ void bullet::Draw(Bullet bullet)
 	if (bullet.pos.y - bullet.size.y < 0.0f) {
 		drw::Sprite(drw::spriteDataList[bullet.textureID], { bullet.pos.x ,bullet.pos.y + 1.0f }, bullet.size);
 	}
+	if (rend::devInfo != rend::InfoMode::NONE) {
+		drw::Circle(bullet.pos, bullet.size, BLUE_B);
+	}
 }
 
 void bullet::Draw(Bullet bullets[], int bulletAmount)
