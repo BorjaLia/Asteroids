@@ -10,18 +10,19 @@ namespace bullet {
 
 		bool active = false;
 
-		//float maxLifetime = 4.0f;
-		float maxLifetime = 0.5f;
+		float maxLifetime = 2.0f;
 		float currentLifetime = 0.0f;
 
 		float damage = 1.0f;
+
+		float mass = 10.0f;
 
 		float maxSpeed = 7.5f;
 		float minSpeed = 0.5f;
 
 		float startingSpeed = 1.5f;
 		float speed = 0.0f;
-		float deceleration = 0.00005f;
+		float deceleration = 0.025f;
 
 		vec::Vector2 pos = { -1.0f,-1.0f };
 		vec::Vector2 direction = { 0.0f,0.01f };

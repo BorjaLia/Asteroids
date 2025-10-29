@@ -2,6 +2,11 @@
 
 int currentShot = 0;
 
+void bulletManager::Reset()
+{
+	currentShot = 0;
+}
+
 int bulletManager::AvailableBullet(bullet::Bullet bullets[], int bulletAmount)
 {
 	for (int i = 0; i < bulletAmount; i++)

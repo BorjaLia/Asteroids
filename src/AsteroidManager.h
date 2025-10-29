@@ -35,12 +35,14 @@ namespace asteroidManager {
 
 	void Init(AsteroidSpawner& spawner);
 
+	void Reset(AsteroidSpawner& spawner);
+
 	int AvailableAsteroid(asteroid::Asteroid asteroids[], int asteroidAmount);
 
 	void Update(AsteroidSpawner& spawner, ship::Ship& ship, bullet::Bullet bullets[], int bulletAmount, asteroid::Asteroid asteroids[], int asteroidAmount);
 
 	void Spawner(AsteroidSpawner& spawner, asteroid::Asteroid asteroids[], int asteroidAmount);
-	void Spawn(AsteroidSpawner& spawner, asteroid::Asteroid& asteroid);
+	void Spawn(AsteroidSpawner& spawner, asteroid::Asteroid& asteroid, int id, asteroid::Asteroid parent = asteroid::Asteroid(), bool child = false);
 	
 	void Destroyer(AsteroidSpawner& spawner, asteroid::Asteroid asteroids[], int asteroidAmount);
 

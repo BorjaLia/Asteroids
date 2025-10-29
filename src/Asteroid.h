@@ -16,6 +16,8 @@ namespace asteroid {
 
 	struct Asteroid {
 
+		int id = 0;
+
 		bool active = false;
 
 		bool breaking = false;
@@ -26,7 +28,7 @@ namespace asteroid {
 
 		Type type = Type::SMALL;
 
-		float Health = 5.0f;
+		float health = 5.0f;
 
 		float damage = 1.0f;
 
@@ -40,8 +42,11 @@ namespace asteroid {
 		float speed = 0.0f;
 		float mass = 1.0f;
 
+
 		vec::Vector2 pos = { -1.0f,-1.0f };
 		vec::Vector2 direction = { 0.0f,0.01f };
+		
+		vec::Vector2 collision = pos;
 
 		vec::Vector2 size = { 0.05f,0.05f };
 

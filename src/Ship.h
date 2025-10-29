@@ -62,10 +62,10 @@ namespace ship {
 		bool rotatingLeft = false;
 
 		float acceleration = 1.15f;
-		float breakingPower = 1.1f;
+		float breakingPower = 0.9999999f;
 		vec::Vector2 speed = { 0.0f, 0.01f };
 
-		float minSpeed = 0.001f;
+		float minSpeed = 0.05f;
 		float maxSpeed = 0.5f;
 
 		bool accelerating = false;
@@ -80,15 +80,13 @@ namespace ship {
 		int maxAmmoSize = 25;
 		int currentAmmoSize = maxAmmoSize;
 
-		//float bulletSpread = 20.0f;
-		float bulletSpread = 0.0f;
+		float bulletSpread = 15.0f;
 
 		bool reloading = false;
 		float reloadTime = 1.0f;
 		float currentReloadTime = 0.0f;
 
-		//float fireRate = 0.175f;
-		float fireRate = 0.1f;
+		float fireRate = 0.15f;
 		float timeSinceLastShot = fireRate;
 
 		//Textures

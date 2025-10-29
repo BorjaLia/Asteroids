@@ -7,6 +7,8 @@ namespace bulletManager {
 
 	const int maxBulletAmount = 50;
 
+	void Reset();
+
 	int AvailableBullet(bullet::Bullet bullets[],int bulletAmount);
 
 	void Shoot(ship::Ship& ship,bullet::Bullet bullets[],int bulletAmount);

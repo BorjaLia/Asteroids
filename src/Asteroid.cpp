@@ -51,6 +51,8 @@ void asteroid::Reset(Asteroid& asteroid)
 	asteroid.lifetime = 0.0f;
 	asteroid.pos = asteroid::Asteroid().pos;
 
+	asteroid.collision = asteroid.pos;
+
 	for (int i = 0; i < particlesAmount; i++)
 	{
 		asteroid.particles[i].pos = asteroid.pos;
@@ -82,14 +84,14 @@ void asteroid::Break(Asteroid& asteroid)
 	asteroid.asteroidParticleActivator.startingPosInfluence = 1.0f;
 	asteroid.asteroidParticleActivator.startingOffset = asteroid.size * 0.5f;
 
-	asteroid.asteroidParticleActivator.lifetime = { 0.5f,2.0f };
+	asteroid.asteroidParticleActivator.lifetime = { 0.25f,0.5f };
 	asteroid.asteroidParticleActivator.direction = { 0.1f,1.0f };
 	asteroid.asteroidParticleActivator.spread = 360.0f;
 	asteroid.asteroidParticleActivator.minSize = { 0.005f,0.005f };
 	asteroid.asteroidParticleActivator.maxSize = { 0.015f,0.015f };
 	asteroid.asteroidParticleActivator.pos = asteroid.pos;
 	asteroid.asteroidParticleActivator.delay = { 0.0f,0.0f };
-	asteroid.asteroidParticleActivator.speed = { 0.05f,0.15f };
+	asteroid.asteroidParticleActivator.speed = { 0.075f,0.25f };
 
 	asteroid.pos = asteroid::Asteroid().pos;
 
@@ -97,7 +99,6 @@ void asteroid::Break(Asteroid& asteroid)
 	prtcl::Init(asteroid.asteroidParticleActivator, asteroid.particles);
 
 	if (rend::devInfo != rend::InfoMode::NONE) {
-		
 		std::cout << '\n';
 		std::cout << "broke!" << '\n';
 	}
@@ -107,20 +108,22 @@ void asteroid::Update(Asteroid& asteroid)
 {
 	if (asteroid.breaking) {
 
+
 		prtcl::Update(asteroid.asteroidParticleActivator, asteroid.particles);
 		
 		for (int i = 0; i < asteroid::particlesAmount; i++)
 		{
-			asteroid.particles[i].speed *= 0.99f;
+			asteroid.particles[i].speed *= (0.75f * rend::deltaTime);
 		}
 
 		asteroid.lifetime += rend::deltaTime;
 		
-		if (asteroid.lifetime >= 3.0f) {
+		if (asteroid.lifetime >= asteroid.asteroidParticleActivator.lifetime.y) {
 			Reset(asteroid);
 			std::cout << '\n';
 			std::cout << "stopped break!" << '\n';
 		}
+		return;
 	}
 
 	if (!asteroid.active) {
@@ -168,10 +171,6 @@ void asteroid::Update(Asteroid& asteroid)
 	}
 
 	prtcl::Update(asteroid.asteroidParticleActivator, asteroid.particles);
-
-	if (asteroid.Health <= 0.0f) {
-		asteroid::Reset(asteroid);
-	}
 }
 
 void asteroid::Update(Asteroid asteroids[], int asteroidAmount)
@@ -209,6 +208,7 @@ void asteroid::Draw(Asteroid asteroid)
 	}
 	if (rend::devInfo != rend::InfoMode::NONE) {
 		drw::Circle(asteroid.pos,asteroid.size,RED_B);
+		drw::Circle(asteroid.collision,asteroid.size*0.25f,MAGENTA_B);
 	}
 }
 

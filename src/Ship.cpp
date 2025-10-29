@@ -17,6 +17,17 @@ void ship::Init(ship::Ship& ship, drw::SpriteData& shipSprite, prtcl::ParticleDa
 
 void ship::Reset(ship::Ship& ship, prtcl::ParticleData fireParticles[])
 {
+
+	vec::Vector2 size = ship.size;
+	int textureId = ship.textureID;
+	drw::AnimationData anim = ship.fireParticleActivator.animation;
+
+	ship = Ship();
+
+	ship.size = size;
+	ship.textureID = textureId;
+	ship.fireParticleActivator.animation = anim;
+
 	ship.fireParticleActivator.loop = true;
 	ship.fireParticleActivator.id = 0;
 	ship.fireParticleActivator.animated = true;
@@ -128,8 +139,8 @@ void ship::Draw(ship::Ship ship, prtcl::ParticleData fireParticles[])
 	if (rend::devInfo != rend::InfoMode::NONE) {
 		drw::Line(ship.pos, ship.lookingAt,ship.lookingAtDistance, RED_B);
 		drw::Line(ship.pos, ship.direction,0.01f, GREEN_B);
+		drw::Circle(ship.pos, ship.size, YELLOW_B);
 	}
-
 }
 
 void ship::DrawHUD(Ship ship)
@@ -238,11 +249,14 @@ void ship::Move(Ship& ship)
 	ship.direction = ship.lookingAt;
 	ship.direction.normalize();
 
+	if (ship.braking) {
+		ship.speed -= ship.speed * ship.breakingPower * rend::deltaTime;
+	}
 
 	if (ship.accelerating) {
 		ship.speed += ship.direction * ship.acceleration * rend::deltaTime;
-		ship.speed.clamp(ship.minSpeed, ship.maxSpeed);
 	}
+	ship.speed.clamp(ship.minSpeed, ship.maxSpeed);
 
 	ship.pos += ship.speed * rend::deltaTime;
 
